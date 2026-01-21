@@ -3,18 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CASE FILE 143: THE GUJARAT PARADOX</title>
+    <title>CASE #143: THE PARADOX</title>
     <style>
-        /* FONTS: Gritty Typewriter, Handwriting, and Bold Headers */
-        @import url('https://fonts.googleapis.com/css2?family=Special+Elite&family=Nothing+You+Could+Do&family=Anton&family=Courier+Prime:wght@400;700&display=swap');
+        /* FONTS: Authentic Typewriter, Handwriting, and Bold Headers */
+        @import url('https://fonts.googleapis.com/css2?family=Special+Elite&family=Permanent+Marker&family=Anton&family=Courier+Prime:wght@400;700&display=swap');
 
         :root {
-            --bg-dark: #1a1818;
-            --cork: #2a231e;
-            --paper: #f0ebe2;
-            --string: #d93838;
-            --tape: rgba(255, 255, 255, 0.25);
-            --ink: #222;
+            --bg-dark: #1b1b1b;
+            --cork: #26201b;
+            --paper: #f4f0e6;
+            --paper-dark: #e8e4da;
+            --red: #c0392b;
+            --tape: rgba(255, 255, 255, 0.15);
+            --ink: #1a1a1a;
+            --accent-blue: #2980b9;
         }
 
         * { box-sizing: border-box; }
@@ -25,194 +27,263 @@
             font-family: 'Special Elite', monospace;
             color: var(--ink);
             overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
         }
 
-        /* --- BACKGROUND TEXTURE --- */
+        /* --- BACKGROUND --- */
         #corkboard {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background-color: var(--cork);
-            /* Cork noise pattern */
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.15'/%3E%3C/svg%3E");
-            box-shadow: inset 0 0 150px rgba(0,0,0,0.9);
+            /* Subtle Texture */
+            background-image: url("data:image/svg+xml,%3Csvg width='200' height='200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.08'/%3E%3C/svg%3E");
+            box-shadow: inset 0 0 150px rgba(0,0,0,0.8);
             z-index: -1;
         }
 
-        /* --- RED STRING (SVG LAYER) --- */
+        /* --- RED STRING (Desktop Layer) --- */
         #string-layer {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            pointer-events: none; z-index: 1;
+            pointer-events: none; z-index: 1; 
+            filter: drop-shadow(0 2px 3px rgba(0,0,0,0.6));
         }
-        /* Hide strings on mobile because layout changes */
-        @media (max-width: 768px) { #string-layer { display: none; } }
 
-        /* --- EVIDENCE CONTAINER --- */
-        #evidence-container {
+        /* --- EVIDENCE BOARD LAYOUT --- */
+        #evidence-board {
             position: relative;
-            width: 100%; height: 100vh;
+            width: 100%; min-height: 100vh;
+            padding: 20px;
         }
 
-        /* --- GENERIC EVIDENCE ITEM --- */
+        /* --- SHARED STYLES --- */
         .evidence-item {
             position: absolute;
-            box-shadow: 5px 10px 20px rgba(0,0,0,0.5);
-            transition: transform 0.3s ease, z-index 0s;
+            transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), z-index 0s;
             cursor: pointer;
-            background: var(--paper);
+            box-shadow: 8px 12px 25px rgba(0,0,0,0.4);
         }
         .evidence-item:hover {
-            transform: scale(1.05) rotate(0deg) !important;
+            transform: scale(1.03) rotate(0deg) !important;
             z-index: 100;
+            box-shadow: 12px 20px 35px rgba(0,0,0,0.5);
         }
-
-        /* TAPE STRIP VISUAL */
-        .tape {
-            position: absolute; top: -12px; left: 50%; transform: translateX(-50%) rotate(2deg);
-            width: 60px; height: 20px;
-            background: var(--tape);
-            box-shadow: 0 1px 2px rgba(0,0,0,0.2);
-            backdrop-filter: blur(1px);
-        }
-
-        /* --- SPECIFIC ITEMS --- */
-
-        /* 1. SUSPECT PROFILE (POLAROID STYLE) */
-        .polaroid {
-            top: 15%; left: 10%; width: 220px;
-            padding: 15px 15px 50px 15px;
-            background: #fff;
-            transform: rotate(-3deg);
-        }
-        .photo-frame {
-            width: 100%; height: 200px;
-            background: #111;
-            overflow: hidden;
-            display: flex; justify-content: center; align-items: center;
-            filter: contrast(1.2) sepia(0.3);
-        }
-        /* Silhouette SVG */
-        .silhouette { width: 100px; height: 100px; opacity: 0.8; fill: #fff; }
         
-        .handwriting {
-            position: absolute; bottom: 10px; left: 0; width: 100%;
-            text-align: center; font-family: 'Nothing You Could Do', cursive;
-            font-size: 1.5rem; color: #000080;
+        /* Realistic Tape */
+        .tape {
+            position: absolute; top: -15px; left: 50%; transform: translateX(-50%) rotate(1deg);
+            width: 70px; height: 25px;
+            background: var(--tape);
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+            backdrop-filter: blur(1px);
+            border-left: 1px solid rgba(255,255,255,0.2);
+            border-right: 1px solid rgba(255,255,255,0.2);
         }
 
-        /* 2. THE DIET COKE (PHOTO EVIDENCE) */
-        .photo-evidence {
-            top: 60%; left: 20%; width: 200px;
-            padding: 10px; background: #fff;
-            transform: rotate(4deg);
-        }
-        .photo-evidence img { width: 100%; height: auto; display: block; filter: contrast(1.1); }
-        .evidence-tag {
-            position: absolute; bottom: -10px; right: -10px;
-            background: #ffeb3b; color: #000; padding: 5px 10px;
-            font-family: 'Courier Prime'; font-size: 0.7rem;
-            transform: rotate(-5deg); box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
-        }
-
-        /* 3. MAP / FLIGHT PATH */
-        .map-doc {
-            top: 20%; right: 15%; width: 260px;
-            background: #e8e8e8; padding: 15px;
-            border: 1px solid #999;
-            transform: rotate(2deg);
-        }
-        .map-graphic {
-            width: 100%; height: 200px; background: #d0d0d0;
-            position: relative; overflow: hidden;
-            border: 1px solid #777;
-        }
-        /* CSS Drawing of India approx */
-        .map-line {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-        }
-        .pin {
-            width: 10px; height: 10px; background: var(--string);
-            border-radius: 50%; position: absolute; border: 2px solid white;
-        }
-
-        /* 4. RECEIPT (SNACKS) */
-        .receipt {
-            top: 55%; right: 25%; width: 180px;
-            background: #fff; padding: 20px;
-            font-family: 'Courier Prime', monospace; font-size: 0.7rem;
-            transform: rotate(-5deg);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-            border-top: 1px dashed #aaa; border-bottom: 1px dashed #aaa;
-        }
-
-        /* 5. MAIN FOLDER (CENTER) */
+        /* --- 1. MAIN FOLDER --- */
         .folder {
-            top: 50%; left: 50%; transform: translate(-50%, -50%);
-            width: 350px; height: 250px;
+            top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-2deg);
+            width: 380px; height: 280px;
             background: #d4a373; /* Manila */
-            border-radius: 4px;
+            border-radius: 3px;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
             z-index: 10;
+            border: 1px solid #c29468;
         }
         .folder::before {
-            content: ""; position: absolute; top: -15px; left: 0;
-            width: 120px; height: 20px; background: #d4a373;
-            border-radius: 5px 5px 0 0;
+            content: ""; position: absolute; top: -18px; left: 0;
+            width: 140px; height: 20px; background: #d4a373;
+            border-radius: 4px 4px 0 0;
+            border: 1px solid #c29468; border-bottom: none;
         }
-        .stamp-top {
-            border: 4px solid #c0392b; color: #c0392b;
-            font-family: 'Anton', sans-serif; font-size: 2.5rem;
-            padding: 5px 20px; transform: rotate(-10deg);
+        .folder-label {
+            background: #fff; padding: 15px 30px;
+            font-family: 'Special Elite'; font-size: 1.4rem; letter-spacing: 1px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transform: rotate(-1deg);
+        }
+        .stamp-confidential {
+            position: absolute; bottom: 30px; right: 30px;
+            border: 3px solid var(--red); color: var(--red);
+            font-family: 'Anton', sans-serif; font-size: 1.5rem;
+            padding: 2px 10px; transform: rotate(-12deg);
             opacity: 0.8; letter-spacing: 2px;
         }
 
-        /* --- MOBILE LAYOUT ADJUSTMENTS --- */
-        @media (max-width: 768px) {
-            #evidence-container {
-                height: auto;
-                display: flex; flex-direction: column;
-                align-items: center; padding: 50px 20px; gap: 40px;
-            }
-            /* Reset positioning for mobile stack */
-            .evidence-item {
-                position: relative; top: auto !important; left: auto !important; right: auto !important; bottom: auto !important;
-                transform: rotate(0deg) !important;
-                width: 90%; max-width: 350px;
-            }
-            .folder { width: 100%; height: 200px; order: -1; margin-bottom: 20px; } /* Folder first */
-            #corkboard { position: fixed; } /* Keep background fixed */
+        /* --- 2. PROFILE CARD (Replaces Photo) --- */
+        .profile-card {
+            top: 15%; left: 10%; width: 260px;
+            background: var(--paper);
+            padding: 20px;
+            transform: rotate(-3deg);
+            border-top: 5px solid var(--ink);
+        }
+        .profile-header {
+            border-bottom: 2px solid var(--ink);
+            padding-bottom: 10px; margin-bottom: 15px;
+            display: flex; justify-content: space-between; align-items: flex-end;
+        }
+        .profile-pic-placeholder {
+            width: 60px; height: 60px; background: #ddd; border: 1px solid #999;
+            display: flex; justify-content: center; align-items: center;
+            font-size: 2rem; color: #777;
+        }
+        .profile-details {
+            font-family: 'Courier Prime'; font-size: 0.8rem; line-height: 1.6;
+        }
+        .highlight { background: rgba(255, 235, 59, 0.4); padding: 0 2px; }
+
+        /* --- 3. DIET COKE EVIDENCE (CSS Constructed) --- */
+        .evidence-bag {
+            top: 60%; left: 15%; width: 220px; padding: 15px;
+            background: rgba(255, 255, 255, 0.08); /* Plastic Bag */
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            transform: rotate(4deg);
+            display: flex; flex-direction: column; align-items: center;
+            box-shadow: 5px 10px 20px rgba(0,0,0,0.3);
+        }
+        
+        /* The CSS Can */
+        .css-can {
+            width: 70px; height: 120px;
+            background: linear-gradient(90deg, #bdc3c7, #ecf0f1, #bdc3c7);
+            border-radius: 5px; border: 1px solid #7f8c8d;
+            position: relative; margin: 20px 0;
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+        }
+        /* Can Details */
+        .css-can::before {
+            content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 6px;
+            background: #95a5a6; border-bottom: 1px solid #7f8c8d;
+        }
+        .css-can-label {
+            position: absolute; top: 20px; left: 0; width: 100%; height: 80px;
+            display: flex; justify-content: center; align-items: center;
+        }
+        .css-can-text {
+            font-family: 'Anton'; color: var(--red); font-size: 1.2rem;
+            transform: rotate(-90deg); letter-spacing: 1px;
+        }
+        .bag-tag {
+            background: #fff; width: 100%; padding: 5px;
+            font-size: 0.6rem; font-family: 'Courier Prime';
+            border-top: 2px solid var(--red); text-align: center;
         }
 
-        /* --- MODAL (RESEARCH PAPER) --- */
+        /* --- 4. RADAR SCREEN --- */
+        .radar-card {
+            top: 15%; right: 10%; width: 260px;
+            background: #111; border: 2px solid #555;
+            padding: 10px; transform: rotate(2deg);
+        }
+        .radar-screen {
+            width: 100%; height: 160px;
+            background: radial-gradient(circle, #002200 0%, #000 100%);
+            border: 1px solid #004400;
+            position: relative; overflow: hidden;
+            border-radius: 4px;
+        }
+        .radar-sweep {
+            position: absolute; top: 50%; left: 50%; width: 50%; height: 2px;
+            background: linear-gradient(90deg, rgba(0,255,0,0), rgba(0,255,0,0.8));
+            transform-origin: left center;
+            animation: sweep 3s infinite linear;
+        }
+        .blip {
+            position: absolute; width: 6px; height: 6px; background: #0f0; border-radius: 50%;
+            box-shadow: 0 0 6px #0f0; animation: blink 2s infinite;
+        }
+        .radar-text { color: #0f0; font-family: 'Courier Prime'; font-size: 0.7rem; margin-top: 5px; text-align: center; text-transform: uppercase;}
+        @keyframes sweep { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+        /* --- 5. RECEIPT --- */
+        .receipt {
+            top: 65%; right: 20%; width: 180px;
+            background: #fff; padding: 20px;
+            font-family: 'Courier Prime'; font-size: 0.65rem;
+            transform: rotate(-4deg);
+            border-bottom: 2px dashed #ccc;
+        }
+
+        /* --- MOBILE OPTIMIZATION --- */
+        @media (max-width: 768px) {
+            #evidence-board {
+                display: flex; flex-direction: column; align-items: center;
+                gap: 40px; padding: 60px 20px; height: auto;
+            }
+            .evidence-item {
+                position: relative !important; top: auto !important; left: auto !important; right: auto !important;
+                transform: rotate(0deg) !important;
+                width: 100%; max-width: 350px; margin: 0;
+            }
+            /* Add some organic messiness back to the list */
+            .evidence-item:nth-child(even) { transform: rotate(1deg) !important; }
+            .evidence-item:nth-child(odd) { transform: rotate(-1deg) !important; }
+            
+            #string-layer { display: none; }
+            .folder { order: -1; margin-bottom: 20px; }
+            .tape { display: block; } 
+        }
+
+        /* --- REPORT MODAL --- */
         #modal {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.92); z-index: 999;
             display: none; align-items: center; justify-content: center;
+            padding: 20px;
+            opacity: 0; transition: opacity 0.3s ease;
         }
         
-        .paper-doc {
-            width: 100%; max-width: 800px; height: 90vh;
+        .doc-container {
+            width: 100%; max-width: 700px; max-height: 90vh;
             background: #fdfbf7;
-            padding: 40px;
+            padding: 50px;
             overflow-y: auto;
             position: relative;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
             font-family: 'Courier Prime', monospace;
-            box-shadow: 0 0 50px #000;
         }
 
-        /* Paper Styles */
-        h1 { text-align: center; text-decoration: underline; font-size: 1.8rem; margin-bottom: 5px; }
-        h2 { background: #222; color: #fff; padding: 5px 10px; font-size: 1.1rem; margin-top: 30px; }
-        p { line-height: 1.6; font-size: 0.95rem; }
-        
-        .red-pen {
-            font-family: 'Nothing You Could Do', cursive; color: #c0392b;
-            font-size: 1.2rem; transform: rotate(-2deg); display: inline-block;
+        /* Report Typography - PERFECT SPACING */
+        .doc-header {
+            display: flex; justify-content: space-between; align-items: flex-end;
+            border-bottom: 3px solid #000; padding-bottom: 15px; margin-bottom: 40px;
+        }
+        .doc-title {
+            font-family: 'Anton'; font-size: 2.2rem; text-transform: uppercase; line-height: 1;
+        }
+        .doc-meta { font-size: 0.75rem; text-align: right; color: #444; }
+
+        h2 {
+            font-family: 'Special Elite'; font-size: 1.1rem; 
+            background: #000; color: #fff; 
+            display: inline-block; padding: 6px 12px; 
+            margin-top: 40px; margin-bottom: 20px;
+            letter-spacing: 1px;
         }
         
+        p {
+            font-size: 1rem; line-height: 1.8; color: #222;
+            margin-bottom: 20px; text-align: justify;
+        }
+
+        .highlight-pen {
+            font-family: 'Permanent Marker'; color: var(--accent-blue);
+            font-size: 1.1rem; transform: rotate(-1deg); display: block;
+            margin-top: -10px; margin-bottom: 25px;
+        }
+
         .close-btn {
-            position: sticky; top: 0; float: right;
-            background: #c0392b; color: white; border: none;
-            padding: 10px 20px; cursor: pointer; font-family: 'Anton';
+            position: absolute; top: 20px; right: 20px;
+            background: transparent; border: 2px solid var(--red); color: var(--red);
+            font-weight: bold; cursor: pointer; padding: 8px 16px;
+            font-family: 'Anton'; letter-spacing: 1px; transition: 0.2s;
         }
+        .close-btn:hover { background: var(--red); color: white; }
+
+        /* Scrollbar styling */
+        .doc-container::-webkit-scrollbar { width: 8px; }
+        .doc-container::-webkit-scrollbar-track { background: #eee; }
+        .doc-container::-webkit-scrollbar-thumb { background: #333; }
 
     </style>
 </head>
@@ -220,156 +291,169 @@
 
     <div id="corkboard"></div>
 
-    <!-- SVG STRINGS (Visual Connector lines for Desktop) -->
+    <!-- Desktop String Layer -->
     <svg id="string-layer">
-        <line x1="20%" y1="25%" x2="50%" y2="50%" stroke="#d93838" stroke-width="2" />
-        <line x1="80%" y1="30%" x2="50%" y2="50%" stroke="#d93838" stroke-width="2" />
-        <line x1="25%" y1="65%" x2="50%" y2="50%" stroke="#d93838" stroke-width="2" stroke-dasharray="5,5" />
+        <line x1="20%" y1="25%" x2="50%" y2="50%" stroke="#d63031" stroke-width="2" />
+        <line x1="80%" y1="25%" x2="50%" y2="50%" stroke="#d63031" stroke-width="2" />
+        <line x1="25%" y1="65%" x2="50%" y2="50%" stroke="#d63031" stroke-width="2" stroke-dasharray="6,4" />
     </svg>
 
-    <div id="evidence-container">
+    <div id="evidence-board">
 
         <!-- 1. MAIN FOLDER -->
-        <div class="evidence-item folder" onclick="openModal()">
-            <div class="stamp-top">CONFIDENTIAL</div>
-            <div style="margin-top:10px; font-size:1.2rem; background:white; padding:5px 15px;">CASE #143: THE PARADOX</div>
-            <div style="margin-top:20px; color:#333; font-size:0.8rem;">( TAP TO OPEN FILE )</div>
-        </div>
-
-        <!-- 2. SUSPECT POLAROID -->
-        <div class="evidence-item polaroid">
+        <div class="evidence-item folder" onclick="openDoc()">
             <div class="tape"></div>
-            <div class="photo-frame">
-                <!-- SVG Silhouette instead of emoji -->
-                <svg class="silhouette" viewBox="0 0 24 24">
-                    <path d="M12 4a4 4 0 0 1 4 4 4 4 0 0 1-4 4 4 4 0 0 1-4-4 4 4 0 0 1 4-4m0 10c4.42 0 8 1.79 8 4v2H4v-2c0-2.21 3.58-4 8-4z"/>
-                </svg>
+            <div class="folder-label">CASE FILE #143</div>
+            <div style="margin-top:15px; font-size:0.8rem; color:#555; font-family:'Courier Prime';">
+                SUBJECT: THE PARADOX
             </div>
-            <div class="handwriting">Target: Aaradhya</div>
-        </div>
-
-        <!-- 3. DIET COKE PHOTO -->
-        <div class="evidence-item photo-evidence">
-            <div class="tape"></div>
-            <!-- Realistic Image from Wikimedia (Reliable source) -->
-            <img src="https://upload.wikimedia.org/wikipedia/commons/f/f6/Diet_Coke_soda_can.jpg" alt="Diet Coke Can">
-            <div class="evidence-tag">EVIDENCE #01</div>
-            <div style="font-size:0.6rem; margin-top:5px; text-align:center;">
-                <strong>ITEM:</strong> Fuel Source<br>
-                <strong>ORIGIN:</strong> Gujarat
+            <div class="stamp-confidential">TOP SECRET</div>
+            <div style="position:absolute; bottom:15px; font-size:0.7rem; color:#666;">
+                ( TAP TO OPEN )
             </div>
         </div>
 
-        <!-- 4. MAP DATA -->
-        <div class="evidence-item map-doc">
+        <!-- 2. PROFILE CARD (No Photo, Text Only) -->
+        <div class="evidence-item profile-card">
             <div class="tape"></div>
-            <div style="text-align:center; font-weight:bold; border-bottom:1px solid black; margin-bottom:5px;">TRACKING DATA</div>
-            <div class="map-graphic">
-                <!-- Pins CSS -->
-                <div class="pin" style="top:40%; left:20%;"></div>
-                <div style="position:absolute; top:35%; left:25%; font-size:0.6rem;">GJ</div>
-                
-                <div class="pin" style="top:50%; left:80%;"></div>
-                <div style="position:absolute; top:45%; left:70%; font-size:0.6rem;">WB</div>
-                
-                <!-- Connector -->
-                <svg width="100%" height="100%" style="position:absolute;">
-                    <line x1="22%" y1="42%" x2="82%" y2="52%" stroke="#d93838" stroke-width="2" stroke-dasharray="3,2" />
-                </svg>
+            <div class="profile-header">
+                <div class="profile-pic-placeholder">?</div>
+                <div style="font-family:'Anton'; font-size:1.2rem;">SUSPECT</div>
             </div>
-            <div style="margin-top:10px; font-size:0.8rem;">
-                <strong>DISTANCE:</strong> 1,900 KM<br>
-                <strong>LATENCY:</strong> 0ms (Instant Love)
+            <div class="profile-details">
+                <strong>NAME:</strong> Aaradhya<br>
+                <strong>ORIGIN:</strong> West Bengal<br>
+                <strong>THREAT:</strong> <span class="highlight">Extreme Cuteness</span><br>
+                <strong>STATUS:</strong> At Large<br>
+                <br>
+                <em>Note: Subject smiles, I melt. Dangerous.</em>
+            </div>
+        </div>
+
+        <!-- 3. RADAR -->
+        <div class="evidence-item radar-card">
+            <div class="tape"></div>
+            <div style="border-bottom:1px solid #0f0; margin-bottom:5px; padding-bottom:2px; font-size:0.8rem; font-family:'Courier Prime'; color:#0f0;">SIGNAL INTERCEPT</div>
+            <div class="radar-screen">
+                <div class="radar-sweep"></div>
+                <!-- Gujarat Blip -->
+                <div class="blip" style="top:55%; left:25%;"></div>
+                <!-- WB Blip -->
+                <div class="blip" style="top:50%; right:25%;"></div>
+            </div>
+            <div class="radar-text">
+                DISTANCE: 1900KM<br>
+                CONNECTION: 100% STABLE
+            </div>
+        </div>
+
+        <!-- 4. DIET COKE (CSS Constructed) -->
+        <div class="evidence-item evidence-bag">
+            <div class="tape"></div>
+            <div style="width:100%; text-align:center; color:#ddd; font-size:0.7rem; font-family:'Anton'; margin-bottom:10px; letter-spacing:1px;">PHYSICAL EVIDENCE</div>
+            
+            <!-- CSS DRAWN CAN -->
+            <div class="css-can">
+                <div class="css-can-label">
+                    <span class="css-can-text">Diet Coke</span>
+                </div>
+            </div>
+
+            <div class="bag-tag">
+                ITEM: #04-FUEL<br>
+                NOTES: Essential for survival.
             </div>
         </div>
 
         <!-- 5. RECEIPT -->
         <div class="evidence-item receipt">
-            <center>*** STORE RECEIPT ***</center>
-            <br>
-            ITEM&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;QTY<br>
-            ----------------<br>
-            Love..........999<br>
-            Patience......001<br>
-            Snacks........500<br>
-            ----------------<br>
-            <strong>TOTAL: PRICELESS</strong>
-            <br><br>
-            <div class="handwriting" style="font-size:1rem; transform:rotate(-5deg); color:red;">Paid in full</div>
+            <div class="tape"></div>
+            <div style="text-align:center; border-bottom:1px dashed #000; margin-bottom:10px; font-size:0.8rem;">TRANSACTION LOG</div>
+            <div style="font-size:0.7rem; font-family:'Courier Prime'; line-height:1.5;">
+                DATE: TODAY<br>
+                -------------------<br>
+                Call Duration...5hrs<br>
+                Lyrics Sent.....42<br>
+                Simping.........High<br>
+                -------------------<br>
+                <strong>TOTAL: PRICELESS</strong>
+            </div>
         </div>
 
     </div>
 
-    <!-- MODAL: THE RESEARCH PAPER -->
+    <!-- REPORT MODAL -->
     <div id="modal">
-        <div class="paper-doc">
-            <button class="close-btn" onclick="closeModal()">CLOSE X</button>
-            
-            <div style="border-bottom: 2px solid black; padding-bottom:10px; margin-bottom:30px;">
-                <span style="font-weight:bold;">BUREAU OF INVESTIGATION</span>
-                <span style="float:right;">CLASSIFIED</span>
+        <div class="doc-container">
+            <button class="close-btn" onclick="closeDoc()">CLOSE</button>
+
+            <div class="doc-header">
+                <div class="doc-title">INVESTIGATION<br>REPORT</div>
+                <div class="doc-meta">
+                    CASE ID: 143<br>
+                    AGENT: NIV<br>
+                    DATE: 2025
+                </div>
             </div>
 
-            <h1>THE GUJARAT-WB CONNECTION</h1>
-            
-            <table style="width:100%; margin-bottom:20px; border:1px solid #000;">
-                <tr>
-                    <td style="padding:10px; border-right:1px solid #000;"><strong>AGENT:</strong> Niv</td>
-                    <td style="padding:10px;"><strong>TARGET:</strong> Aaradhya</td>
-                </tr>
-                <tr>
-                    <td style="padding:10px; border-right:1px solid #000;"><strong>LOCATION:</strong> Gujarat</td>
-                    <td style="padding:10px;"><strong>LOCATION:</strong> West Bengal</td>
-                </tr>
-            </table>
-
-            <h2>1. THE HYPOTHESIS</h2>
-            <p>
-                Initial surveillance suggests that maintaining a relationship across 1,900km is logically inefficient. 
-                However, Subject Niv exhibits <span class="red-pen">exponential happiness</span> levels. 
-                Hypothesis: Subject Aaradhya is using some form of cuteness-based mind control.
+            <p style="font-weight:bold; background:#eee; padding:10px;">
+                SUBJECT: The 1,900km Paradox (Gujarat &harr; West Bengal)
             </p>
 
-            <h2>2. METHODOLOGY: THE SNACK PROTOCOL</h2>
+            <h2>I. ABSTRACT</h2>
             <p>
-                To bridge the physical gap, a complex logistics network known as "The Gift Economy" has been established.
-                Care packages containing chocolate are deployed to West Bengal. 
-                <strong>Result:</strong> 99% success rate in inducing smiles.
+                Standard physics dictates that affection decreases as distance increases. This investigation ("The Paradox") was launched to understand why Subject Niv exhibits 
+                exponentially rising levels of attachment despite the 1,900km separation.
+            </p>
+            <span class="highlight-pen">It doesn't make sense, but it's happening.</span>
+
+            <h2>II. SUSPECT ANALYSIS</h2>
+            <p>
+                <strong>Subject Aaradhya</strong> operates from West Bengal. She possesses a high-level cognitive disruption ability (her smile). 
+                Field agents report that a single text message from the suspect can alter Agent Niv's mood for 24 hours.
             </p>
 
-            <h2>3. AUDIO ANALYSIS (MAISIE PETERS)</h2>
+            <h2>III. THE GIFT ECONOMY</h2>
             <p>
-                Subjects communicate via encrypted lyrical fragments. 
-                Analysis of the track "History of Man" suggests a high level of emotional synchronization.
+                To mitigate physical distance, a logistics network has been established. 
+                Regular shipments of chocolate and snacks are deployed to West Bengal. 
+                Return signals confirm high dopamine levels in the target.
+            </p>
+
+            <h2>IV. AUDIO & FUEL LOGS</h2>
+            <p>
+                <strong>Audio:</strong> Communication is heavily coded in "Maisie Peters" lyrics.
                 <br>
-                <span class="red-pen">Note: She has excellent taste in music.</span>
+                <strong>Fuel:</strong> Agent Niv consumes silver canisters of Diet Coke to maintain operational status during video calls.
             </p>
 
-            <h2>4. THE DIET COKE VARIABLE</h2>
+            <h2>V. FINAL VERDICT</h2>
             <p>
-                Subject Niv requires silver canisters of caffeine (Diet Coke) to sustain late-night video call operations.
-                Without this fuel, the "Good Morning" text protocols may suffer delays.
+                The distance is merely a temporary logistical error. The connection is verified and secure.
+                <br><br>
+                <strong>Recommendation:</strong> Immediate planning of Phase 2 (The Reunion). Until then, visual protocols (FaceTime) will remain in effect.
             </p>
 
-            <h2>5. CONCLUSION</h2>
-            <p>
-                The investigation confirms that the distance is merely a temporary variable. 
-                The connection is verified, secure, and permanent.
-            </p>
-            
-            <div style="margin-top:40px; border: 4px solid #c0392b; color: #c0392b; padding:10px; display:inline-block; font-weight:bold; font-size:1.5rem; transform:rotate(-2deg);">
-                CASE SOLVED: I LOVE YOU
+            <div style="margin-top:40px; border-top:2px solid #000; padding-top:10px; display:flex; justify-content:space-between; align-items:center;">
+                <span style="font-family:'Special Elite';">SIGNED: Detective Niv</span>
+                <span style="font-family:'Permanent Marker'; color:var(--red); font-size:1.5rem; transform:rotate(-2deg);">CASE SOLVED &hearts;</span>
             </div>
 
         </div>
     </div>
 
     <script>
-        function openModal() {
-            document.getElementById('modal').style.display = 'flex';
+        function openDoc() {
+            const modal = document.getElementById('modal');
+            modal.style.display = 'flex';
+            // Slight delay to allow display:flex to apply before opacity transition
+            setTimeout(() => { modal.style.opacity = '1'; }, 10);
         }
-        function closeModal() {
-            document.getElementById('modal').style.display = 'none';
+
+        function closeDoc() {
+            const modal = document.getElementById('modal');
+            modal.style.opacity = '0';
+            setTimeout(() => { modal.style.display = 'none'; }, 300);
         }
     </script>
 </body>
