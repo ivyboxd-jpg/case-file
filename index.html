@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CASE #114</title>
     <style>
-        /* FONTS: Typewriter for data, Handwriting for notes, Stencil for headers */
-        @import url('https://fonts.googleapis.com/css2?family=Special+Elite&family=Reenie+Beanie&family=Black+Ops+One&family=Courier+Prime:wght@400;700&display=swap');
+        /* FONTS */
+        @import url('https://fonts.googleapis.com/css2?family=Special+Elite&family=Reenie+Beanie&family=Black+Ops+One&family=Courier+Prime:wght@400;700&family=Oswald:wght@500&display=swap');
 
         :root {
             --bg-dark: #1b1b1b;
@@ -32,27 +32,25 @@
         #corkboard {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background-color: var(--cork);
-            /* Cork texture */
             background-image: url("data:image/svg+xml,%3Csvg width='200' height='200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.1'/%3E%3C/svg%3E");
             box-shadow: inset 0 0 150px rgba(0,0,0,0.9);
             z-index: -1;
         }
 
-        /* --- RED STRING (Desktop Only) --- */
+        /* --- STRING --- */
         #string-layer {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             pointer-events: none; z-index: 1; 
             filter: drop-shadow(0 2px 2px rgba(0,0,0,0.5));
         }
 
-        /* --- EVIDENCE BOARD LAYOUT --- */
+        /* --- BOARD LAYOUT --- */
         #evidence-board {
             position: relative;
             width: 100%; min-height: 100vh;
             padding: 20px;
         }
 
-        /* --- SHARED STYLES --- */
         .evidence-item {
             position: absolute;
             background: var(--paper);
@@ -67,7 +65,6 @@
             z-index: 100;
         }
         
-        /* TAPE */
         .tape {
             position: absolute; top: -15px; left: 50%; transform: translateX(-50%) rotate(1deg);
             width: 70px; height: 30px;
@@ -79,7 +76,7 @@
             z-index: 10;
         }
 
-        /* --- 1. MAIN FOLDER --- */
+        /* --- 1. FOLDER --- */
         .folder {
             top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-2deg);
             width: 360px; height: 260px;
@@ -107,7 +104,7 @@
             padding: 2px 10px; transform: rotate(-15deg); opacity: 0.8;
         }
 
-        /* --- 2. PROFILE CARD (Clean Text Only) --- */
+        /* --- 2. PROFILE --- */
         .profile-card {
             top: 15%; left: 10%; width: 240px;
             transform: rotate(-3deg);
@@ -123,7 +120,7 @@
             transform: rotate(-2deg);
         }
 
-        /* --- 3. DIET COKE BAG --- */
+        /* --- 3. DIET COKE --- */
         .evidence-bag {
             top: 60%; left: 15%; width: 180px;
             background: rgba(255, 255, 255, 0.05);
@@ -151,28 +148,40 @@
             font-family: 'Courier Prime'; border-top: 3px solid var(--red); text-align: center;
         }
 
-        /* --- 4. WAVEFORM CARD --- */
-        .wave-card {
-            top: 15%; right: 15%; width: 260px;
-            background: #111; color: #0f0; border: 2px solid #333;
-            transform: rotate(2deg); padding: 15px;
-            font-family: 'Courier Prime';
+        /* --- 4. BOARDING PASS (New Replacement) --- */
+        .boarding-pass {
+            top: 15%; right: 15%; width: 280px;
+            background: #fff; padding: 0;
+            transform: rotate(2deg);
+            border-radius: 6px; overflow: hidden;
+            font-family: 'Oswald', sans-serif;
+            border-left: 8px solid var(--red);
         }
-        .wave-screen {
-            width: 100%; height: 80px;
-            background: #000; border: 1px solid #004400;
-            display: flex; align-items: center; justify-content: center; gap: 3px;
-            overflow: hidden; margin-bottom: 5px;
+        .pass-header {
+            background: #222; color: #fff; padding: 5px 15px;
+            font-size: 0.7rem; letter-spacing: 2px;
+            display: flex; justify-content: space-between;
         }
-        .bar {
-            width: 4px; background: #0f0; animation: wave 1s infinite ease-in-out;
-            box-shadow: 0 0 5px #0f0;
+        .pass-content {
+            padding: 15px; display: flex; justify-content: space-between; align-items: center;
         }
-        @keyframes wave { 0%, 100% { height: 10px; } 50% { height: 60px; } }
-        /* Stagger animation */
-        .bar:nth-child(1) { animation-delay: 0.1s; } .bar:nth-child(2) { animation-delay: 0.2s; }
-        .bar:nth-child(3) { animation-delay: 0.3s; } .bar:nth-child(4) { animation-delay: 0.1s; }
-        .bar:nth-child(5) { animation-delay: 0.4s; } .bar:nth-child(6) { animation-delay: 0.2s; }
+        .airport {
+            text-align: center;
+        }
+        .code {
+            font-size: 1.8rem; font-weight: bold; color: #222;
+        }
+        .city {
+            font-size: 0.6rem; color: #666; font-family: 'Courier Prime';
+        }
+        .flight-icon {
+            font-size: 1.2rem; color: var(--red);
+        }
+        .pass-footer {
+            background: #eee; padding: 5px 15px; font-size: 0.6rem;
+            font-family: 'Courier Prime'; color: #444; border-top: 1px dashed #aaa;
+            display: flex; justify-content: space-between;
+        }
 
         /* --- 5. RECEIPT --- */
         .receipt {
@@ -258,11 +267,13 @@
             transform: rotate(-5deg); opacity: 0.9;
         }
 
+        /* --- FIXED CLOSE BUTTON --- */
         .close-btn {
-            position: sticky; top: 0; float: right;
-            background: transparent; color: var(--red); border: 2px solid var(--red);
-            padding: 8px 15px; font-family: 'Black Ops One'; cursor: pointer;
-            transition: 0.2s;
+            position: absolute; top: 25px; right: 25px;
+            background: transparent; color: var(--red); 
+            border: 2px solid var(--red);
+            padding: 8px 15px; font-family: 'Black Ops One'; 
+            cursor: pointer; transition: 0.2s; z-index: 10;
         }
         .close-btn:hover { background: var(--red); color: white; }
 
@@ -284,11 +295,11 @@
         <!-- 1. FOLDER -->
         <div class="evidence-item folder" onclick="openDoc()">
             <div class="stamp-top">CONFIDENTIAL</div>
-            <div class="folder-label">CASE FILE #143</div>
+            <div class="folder-label">CASE FILE #114</div>
             <div style="margin-top:20px; font-size:0.8rem; color:#555;">( TAP TO DECLASSIFY )</div>
         </div>
 
-        <!-- 2. PROFILE CARD (Clean Text Only) -->
+        <!-- 2. PROFILE CARD -->
         <div class="evidence-item profile-card">
             <div class="tape"></div>
             <div style="border-bottom:2px solid #000; padding-bottom:5px; margin-bottom:15px; font-weight:bold;">TARGET DOSSIER</div>
@@ -301,15 +312,28 @@
             <div class="handwriting">Suspect stole my heart.</div>
         </div>
 
-        <!-- 3. WAVEFORM (Replaces Map) -->
-        <div class="evidence-item wave-card">
+        <!-- 3. FLIGHT BOARDING PASS (Replacement) -->
+        <div class="evidence-item boarding-pass">
             <div class="tape"></div>
-            <div style="font-size:0.7rem; color:#0f0; margin-bottom:5px;">AUDIO ANALYSIS: "LAUGH.MP3"</div>
-            <div class="wave-screen">
-                <div class="bar"></div><div class="bar"></div><div class="bar"></div>
-                <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+            <div class="pass-header">
+                <span>AIRLINE TICKET</span>
+                <span>PRIORITY</span>
             </div>
-            <div style="font-size:0.6rem; color:#aaa;">MATCH: 100% ADORABLE</div>
+            <div class="pass-content">
+                <div class="airport">
+                    <div class="code">AMD</div>
+                    <div class="city">GUJARAT</div>
+                </div>
+                <div class="flight-icon">✈</div>
+                <div class="airport">
+                    <div class="code">CCU</div>
+                    <div class="city">WEST BENGAL</div>
+                </div>
+            </div>
+            <div class="pass-footer">
+                <span>PASSENGER: NIV</span>
+                <span>DATE: SOON</span>
+            </div>
         </div>
 
         <!-- 4. MAISIE PETERS NOTE -->
