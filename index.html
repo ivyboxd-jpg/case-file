@@ -13,9 +13,9 @@
             --cork: #2b221e;
             --paper: #f4f0e6;
             --red: #d63031;
-            --tape: rgba(255, 255, 255, 0.2);
+            --tape: rgba(255, 255, 255, 0.25);
             --ink: #1a1a1a;
-            --highlight: rgba(255, 255, 0, 0.3);
+            --blue-ink: #000080;
         }
 
         * { box-sizing: border-box; }
@@ -45,7 +45,7 @@
             filter: drop-shadow(0 2px 2px rgba(0,0,0,0.5));
         }
 
-        /* --- BOARD CONTAINER --- */
+        /* --- EVIDENCE BOARD LAYOUT --- */
         #evidence-board {
             position: relative;
             width: 100%; min-height: 100vh;
@@ -55,22 +55,28 @@
         /* --- SHARED STYLES --- */
         .evidence-item {
             position: absolute;
+            background: var(--paper);
+            padding: 25px 20px 20px 20px;
             transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
             cursor: pointer;
             box-shadow: 10px 15px 30px rgba(0,0,0,0.4);
+            border-radius: 2px;
         }
         .evidence-item:hover {
             transform: scale(1.05) rotate(0deg) !important;
             z-index: 100;
         }
+        
+        /* TAPE */
         .tape {
-            position: absolute; top: -12px; left: 50%; transform: translateX(-50%) rotate(1deg);
-            width: 70px; height: 25px;
+            position: absolute; top: -15px; left: 50%; transform: translateX(-50%) rotate(1deg);
+            width: 70px; height: 30px;
             background: var(--tape);
             box-shadow: 0 1px 2px rgba(0,0,0,0.1);
             backdrop-filter: blur(1px);
             border-left: 1px solid rgba(255,255,255,0.2);
             border-right: 1px solid rgba(255,255,255,0.2);
+            z-index: 10;
         }
 
         /* --- 1. MAIN FOLDER --- */
@@ -82,6 +88,7 @@
             display: flex; flex-direction: column; justify-content: center; align-items: center;
             z-index: 10;
             border: 1px solid #c29468;
+            padding: 0;
         }
         .folder::before {
             content: ""; position: absolute; top: -18px; left: 0;
@@ -100,107 +107,97 @@
             padding: 2px 10px; transform: rotate(-15deg); opacity: 0.8;
         }
 
-        /* --- 2. PROFILE CARD (No Picture, just Text) --- */
+        /* --- 2. PROFILE CARD (Clean Text Only) --- */
         .profile-card {
-            top: 15%; left: 10%; width: 250px;
-            background: #fff; padding: 20px;
+            top: 15%; left: 10%; width: 240px;
             transform: rotate(-3deg);
-            border-top: 5px solid #333;
+            border-top: 6px solid #333;
         }
-        .redacted-box {
-            width: 100px; height: 100px; background: #000;
-            margin-bottom: 15px; color: #fff; display: flex; 
-            justify-content: center; align-items: center; font-size: 0.7rem;
-            font-family: 'Courier Prime';
+        .profile-text { 
+            font-family: 'Courier Prime'; font-size: 0.9rem; line-height: 1.8; color: #333;
+            margin-top: 10px;
         }
-        .profile-text { font-family: 'Courier Prime'; font-size: 0.75rem; line-height: 1.5; }
         .handwritten {
-            font-family: 'Reenie Beanie', cursive; color: #000080;
-            font-size: 1.3rem; position: absolute; bottom: 10px; right: 10px;
-            transform: rotate(-5deg);
+            font-family: 'Reenie Beanie', cursive; color: var(--blue-ink);
+            font-size: 1.4rem; margin-top: 15px; text-align: center;
+            transform: rotate(-2deg);
         }
 
-        /* --- 3. DIET COKE (Evidence Bag) --- */
+        /* --- 3. DIET COKE BAG --- */
         .evidence-bag {
-            top: 60%; left: 15%; width: 200px; padding: 10px;
+            top: 60%; left: 15%; width: 180px;
             background: rgba(255, 255, 255, 0.05);
             border: 2px solid rgba(255, 255, 255, 0.2);
             transform: rotate(4deg);
             display: flex; flex-direction: column; align-items: center;
         }
         .css-can {
-            width: 60px; height: 110px;
+            width: 50px; height: 90px;
             background: linear-gradient(90deg, #bdc3c7, #ecf0f1, #bdc3c7);
-            border-radius: 5px; border: 1px solid #7f8c8d;
-            position: relative; margin: 15px 0;
+            border-radius: 4px; border: 1px solid #7f8c8d;
+            position: relative; margin: 10px 0;
             box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
         }
         .css-can-label {
-            position: absolute; top: 20px; left: 0; width: 100%; height: 70px;
+            position: absolute; top: 15px; left: 0; width: 100%; height: 60px;
             display: flex; justify-content: center; align-items: center;
         }
         .css-can-text {
-            font-family: 'Black Ops One'; color: var(--red); font-size: 1.2rem;
+            font-family: 'Black Ops One'; color: var(--red); font-size: 0.9rem;
             transform: rotate(-90deg); letter-spacing: 1px;
         }
         .bag-tag {
-            background: #fff; width: 100%; padding: 5px; font-size: 0.6rem;
-            font-family: 'Courier Prime'; border-top: 4px solid var(--red);
-            text-align: center;
+            background: #fff; width: 100%; padding: 5px; font-size: 0.55rem;
+            font-family: 'Courier Prime'; border-top: 3px solid var(--red); text-align: center;
         }
 
-        /* --- 4. MAP (Flight Path) --- */
-        .map-card {
-            top: 15%; right: 15%; width: 280px;
-            background: #eee; padding: 10px;
-            border: 1px solid #999; transform: rotate(2deg);
+        /* --- 4. WAVEFORM CARD --- */
+        .wave-card {
+            top: 15%; right: 15%; width: 260px;
+            background: #111; color: #0f0; border: 2px solid #333;
+            transform: rotate(2deg); padding: 15px;
+            font-family: 'Courier Prime';
         }
-        .map-screen {
-            width: 100%; height: 180px; background: #2c3e50;
-            position: relative; overflow: hidden; border: 1px solid #000;
+        .wave-screen {
+            width: 100%; height: 80px;
+            background: #000; border: 1px solid #004400;
+            display: flex; align-items: center; justify-content: center; gap: 3px;
+            overflow: hidden; margin-bottom: 5px;
         }
-        /* Grid */
-        .map-grid {
-            position: absolute; width: 100%; height: 100%;
-            background-image: linear-gradient(#34495e 1px, transparent 1px), linear-gradient(90deg, #34495e 1px, transparent 1px);
-            background-size: 20px 20px;
+        .bar {
+            width: 4px; background: #0f0; animation: wave 1s infinite ease-in-out;
+            box-shadow: 0 0 5px #0f0;
         }
-        /* Connection Arc */
-        .flight-path {
-            position: absolute; top: 50%; left: 20%; width: 60%; height: 60px;
-            border-top: 2px dashed #e74c3c; border-radius: 50%;
-        }
-        .dot { width: 8px; height: 8px; background: #e74c3c; border-radius: 50%; position: absolute; border: 1px solid white; }
+        @keyframes wave { 0%, 100% { height: 10px; } 50% { height: 60px; } }
+        /* Stagger animation */
+        .bar:nth-child(1) { animation-delay: 0.1s; } .bar:nth-child(2) { animation-delay: 0.2s; }
+        .bar:nth-child(3) { animation-delay: 0.3s; } .bar:nth-child(4) { animation-delay: 0.1s; }
+        .bar:nth-child(5) { animation-delay: 0.4s; } .bar:nth-child(6) { animation-delay: 0.2s; }
 
-        /* --- 5. REALISTIC THERMAL RECEIPT --- */
+        /* --- 5. RECEIPT --- */
         .receipt {
             top: 65%; right: 25%; width: 200px;
-            background: #fff; padding: 20px 15px;
+            background: #fff; padding: 30px 15px 15px 15px;
             font-family: 'Courier Prime', monospace; font-size: 0.7rem;
             transform: rotate(-3deg);
             box-shadow: 0 5px 10px rgba(0,0,0,0.2);
             position: relative;
         }
-        /* Zigzag bottom edge */
         .receipt::after {
             content: ""; position: absolute; bottom: -10px; left: 0; width: 100%; height: 10px;
-            background: linear-gradient(45deg, transparent 33.333%, #fff 33.333%, #fff 66.667%, transparent 66.667%), linear-gradient(-45deg, transparent 33.333%, #fff 33.333%, #fff 66.667%, transparent 66.667%);
+            background: linear-gradient(45deg, transparent 33.3%, #fff 33.3%, #fff 66.6%, transparent 66.6%), linear-gradient(-45deg, transparent 33.3%, #fff 33.3%, #fff 66.6%, transparent 66.6%);
             background-size: 10px 20px;
         }
-        .barcode {
-            height: 30px; width: 100%; margin-top: 10px;
-            background: repeating-linear-gradient(90deg, #000 0, #000 2px, #fff 2px, #fff 4px, #000 4px, #000 5px, #fff 5px, #fff 8px);
-        }
 
-        /* --- 6. MAISIE PETERS STICKY NOTE --- */
+        /* --- 6. STICKY NOTE --- */
         .sticky-note {
             top: 55%; left: 30%; width: 180px; height: 180px;
-            background: #ffeb3b; padding: 20px;
-            box-shadow: 5px 5px 10px rgba(0,0,0,0.2);
+            background: #ffeb3b;
             transform: rotate(5deg);
+            display: flex; align-items: center; justify-content: center; text-align: center;
         }
         .sticky-text {
-            font-family: 'Reenie Beanie', cursive; font-size: 1.5rem; line-height: 1.2; color: #000;
+            font-family: 'Reenie Beanie', cursive; font-size: 1.6rem; line-height: 1.1; color: #000;
         }
 
         /* --- MOBILE LAYOUT --- */
@@ -215,7 +212,6 @@
             }
             .evidence-item:nth-child(odd) { transform: rotate(1deg) !important; }
             .evidence-item:nth-child(even) { transform: rotate(-1deg) !important; }
-            
             #string-layer { display: none; }
             .folder { order: -1; margin-bottom: 20px; }
         }
@@ -225,24 +221,50 @@
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.95); z-index: 999;
             display: none; align-items: center; justify-content: center;
-            opacity: 0; transition: opacity 0.3s;
         }
         .doc {
-            width: 100%; max-width: 750px; height: 90vh;
-            background: #fdfbf7; padding: 50px;
+            width: 100%; max-width: 750px; height: 85vh;
+            background: #fdfbf7; padding: 60px;
             overflow-y: auto; position: relative;
             box-shadow: 0 0 50px #000; font-family: 'Courier Prime';
+            color: #222;
         }
         
-        h1 { font-family: 'Black Ops One'; font-size: 2rem; border-bottom: 2px solid #000; padding-bottom: 10px; }
-        h2 { background: #000; color: #fff; padding: 5px; font-size: 1rem; display: inline-block; margin-top: 30px; }
-        p { line-height: 1.6; font-size: 0.95rem; margin-bottom: 20px; }
+        /* Report Typography */
+        h1 { font-family: 'Black Ops One'; font-size: 2.2rem; border-bottom: 3px solid #000; padding-bottom: 10px; margin-bottom: 30px; letter-spacing: 1px; text-align: center; }
         
+        .section-header {
+            background: #000; color: #fff; padding: 6px 12px;
+            font-size: 1rem; display: inline-block; margin-top: 40px; margin-bottom: 15px;
+            font-family: 'Special Elite'; letter-spacing: 1px;
+        }
+        
+        p { line-height: 1.8; font-size: 1rem; margin-bottom: 20px; text-align: justify; }
+        
+        /* Handwritten Annotations */
+        .note-red {
+            font-family: 'Reenie Beanie'; color: var(--red); font-size: 1.4rem;
+            display: block; margin: -5px 0 20px 0; transform: rotate(-1deg);
+        }
+        
+        /* Footer */
+        .doc-footer {
+            margin-top: 60px; padding-top: 20px; border-top: 2px solid #ccc;
+            display: flex; justify-content: space-between; align-items: flex-end;
+        }
+        .stamp-solved {
+            border: 4px solid var(--red); color: var(--red);
+            font-family: 'Black Ops One'; font-size: 2rem; padding: 5px 15px;
+            transform: rotate(-5deg); opacity: 0.9;
+        }
+
         .close-btn {
             position: sticky; top: 0; float: right;
-            background: #c0392b; color: white; border: none; padding: 8px 15px;
-            font-family: 'Black Ops One'; cursor: pointer;
+            background: transparent; color: var(--red); border: 2px solid var(--red);
+            padding: 8px 15px; font-family: 'Black Ops One'; cursor: pointer;
+            transition: 0.2s;
         }
+        .close-btn:hover { background: var(--red); color: white; }
 
     </style>
 </head>
@@ -255,7 +277,6 @@
         <line x1="20%" y1="25%" x2="50%" y2="50%" stroke="#d63031" stroke-width="2" />
         <line x1="80%" y1="25%" x2="50%" y2="50%" stroke="#d63031" stroke-width="2" />
         <line x1="25%" y1="65%" x2="50%" y2="50%" stroke="#d63031" stroke-width="2" stroke-dasharray="5,5" />
-        <line x1="40%" y1="60%" x2="50%" y2="50%" stroke="#d63031" stroke-width="2" />
     </svg>
 
     <div id="evidence-board">
@@ -267,88 +288,62 @@
             <div style="margin-top:20px; font-size:0.8rem; color:#555;">( TAP TO DECLASSIFY )</div>
         </div>
 
-        <!-- 2. PROFILE CARD (NO PHOTO) -->
+        <!-- 2. PROFILE CARD (Clean Text Only) -->
         <div class="evidence-item profile-card">
             <div class="tape"></div>
             <div style="border-bottom:2px solid #000; padding-bottom:5px; margin-bottom:15px; font-weight:bold;">TARGET DOSSIER</div>
-            <div style="display:flex; gap:10px;">
-                <div class="redacted-box">IMG<br>REDACTED</div>
-                <div class="profile-text">
-                    <strong>NAME:</strong> Aaradhya<br>
-                    <strong>LOC:</strong> West Bengal<br>
-                    <strong>STATUS:</strong> Cute<br>
-                </div>
+            <div class="profile-text">
+                <strong>NAME:</strong> Aaradhya<br>
+                <strong>LOC:</strong> West Bengal<br>
+                <strong>THREAT:</strong> Critical (Cuteness)<br>
+                <strong>STATUS:</strong> Missed<br>
             </div>
-            <div class="handwriting">Suspect is extremely dangerous (to my heart).</div>
+            <div class="handwriting">Suspect stole my heart.</div>
         </div>
 
-        <!-- 3. MAP -->
-        <div class="evidence-item map-card">
+        <!-- 3. WAVEFORM (Replaces Map) -->
+        <div class="evidence-item wave-card">
             <div class="tape"></div>
-            <div style="text-align:center; font-weight:bold; font-size:0.8rem; margin-bottom:5px;">SATELLITE TRAJECTORY</div>
-            <div class="map-screen">
-                <div class="map-grid"></div>
-                <!-- Flight Path -->
-                <div class="flight-path"></div>
-                <div class="dot" style="top:48%; left:18%;"></div> <!-- GJ -->
-                <div class="dot" style="top:48%; right:18%;"></div> <!-- WB -->
-                <div style="position:absolute; bottom:5px; left:5px; color:#ccc; font-size:0.6rem; font-family:'Courier Prime';">
-                    DIST: 1900KM<br>SIGNAL: STRONG
-                </div>
+            <div style="font-size:0.7rem; color:#0f0; margin-bottom:5px;">AUDIO ANALYSIS: "LAUGH.MP3"</div>
+            <div class="wave-screen">
+                <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+                <div class="bar"></div><div class="bar"></div><div class="bar"></div>
             </div>
+            <div style="font-size:0.6rem; color:#aaa;">MATCH: 100% ADORABLE</div>
         </div>
 
         <!-- 4. MAISIE PETERS NOTE -->
         <div class="evidence-item sticky-note">
             <div class="tape"></div>
             <div class="sticky-text">
-                Subject sent link to "Helicopter" by Maisie Peters...
-                <br><br>
-                <span style="color:#d63031; text-decoration:underline;">Does this mean she misses me?</span>
+                She sent "Helicopter" by Maisie Peters...
                 <br>
-                (Yes.)
+                <span style="color:#d63031; text-decoration:underline;">Does she miss me?</span>
+                <br>
+                (Evidence points to YES)
             </div>
         </div>
 
         <!-- 5. DIET COKE -->
         <div class="evidence-item evidence-bag">
             <div class="tape"></div>
-            <div style="font-size:0.6rem; font-family:'Black Ops One'; color:#aaa; margin-bottom:5px;">EVIDENCE #4A</div>
             <div class="css-can">
-                <div class="css-can-label">
-                    <span class="css-can-text">Diet Coke</span>
-                </div>
+                <div class="css-can-label"><span class="css-can-text">Diet Coke</span></div>
             </div>
-            <div class="bag-tag">
-                CONTENTS: CAFFEINE<br>
-                NOTE: FUEL SOURCE
-            </div>
+            <div class="bag-tag">CONTENTS: CAFFEINE</div>
         </div>
 
         <!-- 6. RECEIPT -->
         <div class="evidence-item receipt">
             <div class="tape"></div>
             <div style="text-align:center; margin-bottom:10px; font-weight:bold;">STORE RECEIPT</div>
-            
-            <div style="display:flex; justify-content:space-between; margin-bottom:5px;">
-                <span>ITEM</span><span>AMT</span>
-            </div>
-            <div style="display:flex; justify-content:space-between;">
-                <span>Late Calls</span><span>99.00</span>
-            </div>
-            <div style="display:flex; justify-content:space-between;">
-                <span>Snacks</span><span>45.50</span>
-            </div>
-            <div style="display:flex; justify-content:space-between;">
-                <span>Feelings</span><span>99999</span>
-            </div>
-            
+            <div style="display:flex; justify-content:space-between;"><span>Late Calls</span><span>99.00</span></div>
+            <div style="display:flex; justify-content:space-between;"><span>Snacks</span><span>45.50</span></div>
+            <div style="display:flex; justify-content:space-between;"><span>Feelings</span><span>99999</span></div>
             <div style="border-top:1px dashed #000; margin-top:10px; padding-top:5px; font-weight:bold; display:flex; justify-content:space-between;">
                 <span>TOTAL:</span><span>PRICELESS</span>
             </div>
-            
-            <div class="barcode"></div>
-            <div style="text-align:center; margin-top:5px; font-size:0.6rem;">THANK YOU FOR LOVING ME</div>
+            <div style="text-align:center; margin-top:10px; font-size:0.6rem;">THANK YOU FOR LOVING ME</div>
         </div>
 
     </div>
@@ -359,47 +354,48 @@
             <button class="close-btn" onclick="closeDoc()">CLOSE</button>
             
             <div style="display:flex; justify-content:space-between; border-bottom:2px solid #000; padding-bottom:10px; margin-bottom:30px;">
-                <span><strong>AGENCY:</strong> BUREAU OF ROMANCE</span>
-                <span><strong>CLEARANCE:</strong> NIV ONLY</span>
+                <span>REF: #143-GUJ-WB</span>
+                <span>AGENT: NIV</span>
             </div>
 
-            <h1 style="text-align:center;">INVESTIGATION REPORT</h1>
+            <h1>INVESTIGATION REPORT</h1>
 
-            <p style="background:#eee; padding:10px; font-weight:bold;">
-                SUBJECT: The Gujarat-WB Paradox
-            </p>
-
-            <h2>1. OVERVIEW</h2>
+            <div class="section-header">1. THE HYPOTHESIS</div>
             <p>
                 Two subjects (Niv & Aaradhya) are separated by approximately 1,900km. 
-                Despite this logistical nightmare, emotional proximity remains at critical levels.
-                We are investigating the cause.
+                Standard physics implies affection should decrease with distance. 
+                However, data collected over the last quarter shows a vertical spike in attachment.
             </p>
+            <span class="note-red">It defies all logic, but the data doesn't lie.</span>
 
-            <h2>2. AUDIO ANALYSIS (HELICOPTER)</h2>
+            <div class="section-header">2. THE AUDIO EVIDENCE</div>
             <p>
                 Subject B (Aaradhya) recently transmitted the audio file "Helicopter" by Maisie Peters.
-                Analysis suggests this is a coded distress signal translating to: 
-                <span style="background:var(--highlight);">"I wish the distance didn't exist."</span>
+                Analysis of the lyrics suggests a coded distress signal translating to: 
+                "I wish this distance didn't exist."
             </p>
+            <span class="note-red">Theory confirmed: She definitely misses me.</span>
 
-            <h2>3. THE DIET COKE VARIABLE</h2>
+            <div class="section-header">3. THE DIET COKE PROTOCOL</div>
             <p>
-                Subject A (Niv) cannot maintain surveillance (video calls) without Diet Coke.
-                It is the primary fuel source for the "Good Morning" protocol.
+                Agent Niv (Gujarat) relies on silver aluminum canisters (Diet Coke) to maintain surveillance capabilities during late-night video calls.
+                Without this fuel source, the "Good Morning" text efficiency drops by 40%.
             </p>
+            <span class="note-red">Note: Send more snacks to West Bengal immediately.</span>
 
-            <h2>4. FINAL VERDICT</h2>
+            <div class="section-header">4. CONCLUSION</div>
             <p>
-                The 1,900km gap is merely a glitch in the simulation. The bond is permanent.
-                <br><br>
-                <strong>Recommendation:</strong> Close the distance immediately.
+                The investigation confirms that the 1,900km gap is merely a glitch in the simulation. 
+                The bond is unbreakable.
+                Recommendation: Initiate Phase 2 (The Reunion).
             </p>
 
-            <div style="margin-top:50px; text-align:right;">
-                <span class="handwritten" style="font-size:2rem; color:var(--red);">Case Solved. &hearts;</span>
-                <br>
-                - Detective Niv
+            <div class="doc-footer">
+                <div>
+                    Signed,<br>
+                    <strong>Detective Niv</strong>
+                </div>
+                <div class="stamp-solved">CASE SOLVED</div>
             </div>
         </div>
     </div>
